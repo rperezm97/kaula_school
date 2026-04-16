@@ -90,10 +90,10 @@ export function hasAccessToTier(
 // system‑wide.
 export const COOKIE_NAME = "app_session_id";
 
-// Duration for which the session cookie is valid in milliseconds. A
-// default of one year has been chosen for the MVP. Consider
-// adjusting this if shorter sessions are desirable.
-export const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 365; // 1 year
+// Duration for which the session cookie is valid in milliseconds.
+// 30 days: long enough that students don't get logged out mid-course,
+// short enough to limit the blast radius of a stolen token.
+export const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 // Minimum password length enforced during user registration and
 // password reset. Adjust this value to increase password strength

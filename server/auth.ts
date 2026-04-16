@@ -47,7 +47,6 @@ export async function createSessionToken(userId: number, email: string, role: st
     userId,
     email,
     role,
-    openId: `local_${userId}`,
   })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setExpirationTime(expirationSeconds)

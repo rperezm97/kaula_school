@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link, useParams } from "wouter";
 import {
   Loader2, ArrowLeft, Bookmark, BookmarkCheck, Play, FileText, ChevronRight,
-  Clock, CheckCircle, StickyNote, Plus, Trash2, Pencil, X
+  Clock, CheckCircle, StickyNote, Plus, Trash2, Pencil, X, AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -204,14 +204,28 @@ export default function VideoPlayer() {
                 <div className="w-full h-full flex items-center justify-center">
                   <Loader2 className="animate-spin h-8 w-8 text-muted-foreground" />
                 </div>
+              ) : hasStream && streamTokenQuery.isError ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center px-6">
+                    <AlertCircle className="h-10 w-10 text-destructive/60 mx-auto mb-3" />
+                    <p className="text-muted-foreground text-sm mb-3">Could not load video stream.</p>
+                    <button
+                      onClick={() => streamTokenQuery.refetch()}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Try again
+                    </button>
+                  </div>
+                </div>
               ) : embedUrl ? (
                 <iframe
                   src={embedUrl}
                   className="w-full h-full"
                   allow="autoplay; encrypted-media; picture-in-picture"
                   allowFullScreen
-                  sandbox={hasStream ? "allow-scripts allow-same-origin allow-forms" : "allow-scripts allow-same-origin allow-popups"}
+                  sandbox={hasStream ? "allow-scripts allow-same-origin allow-forms allow-presentation" : "allow-scripts allow-same-origin allow-popups allow-forms"}
                   style={{ border: "none" }}
+                  title={video.title}
                   onContextMenu={(e) => e.preventDefault()}
                 />
               ) : (
@@ -360,6 +374,12 @@ export default function VideoPlayer() {
                 {/* Notes list */}
                 {notesQuery.isLoading ? (
                   <div className="flex justify-center py-8"><Loader2 className="animate-spin h-5 w-5 text-primary" /></div>
+                ) : notesQuery.isError ? (
+                  <div className="text-center py-8">
+                    <AlertCircle className="h-5 w-5 text-destructive/50 mx-auto mb-2" />
+                    <p className="text-muted-foreground/50 text-sm">Could not load notes.</p>
+                    <button onClick={() => notesQuery.refetch()} className="text-xs text-primary hover:underline mt-1">Retry</button>
+                  </div>
                 ) : notesQuery.data?.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground/50 text-sm">No notes yet. Add one above.</p>
